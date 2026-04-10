@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight, Code2, MessageSquare, ImageIcon, Zap, Users, Star,
   Globe, Smartphone, Shield, Cpu, ChevronRight, Check,
-  Copy, CheckCheck, Terminal, Package, Settings2, Rocket, GitBranch,
+  Copy, CheckCheck, Terminal, Package, Settings2, Rocket, GitBranch, Github,
 } from "lucide-react";
 
 function LogoMark({ size = 28 }: { size?: number }) {
@@ -917,7 +917,19 @@ export default function About() {
             <Link href="/about"><span className="text-white cursor-pointer">About</span></Link>
             <Link href="/chat"><span className="hover:text-white transition-colors cursor-pointer">Launch App</span></Link>
           </div>
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>© 2025 Sandbox.ai</p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/Huynhthuongg/Sanbox/tree/main?tab=readme-ov-file"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 transition-colors hover:text-white"
+              style={{ color: "rgba(255,255,255,0.35)", fontSize: 12 }}
+            >
+              <Github size={14} />
+              GitHub
+            </a>
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>© 2025 Sandbox.ai</p>
+          </div>
         </div>
       </footer>
     </div>

@@ -12,7 +12,7 @@
 
 <p align="center">
   <strong>Một workspace. Bốn AI mode. Không giới hạn khả năng.</strong><br/>
-  <sub>Chat · Code · Image · Flutter — tất cả trong một dark UI cực đỉnh</sub>
+  <sub>Agent • Vscode • Chat • Sns — tất cả trong một dark UI cực đỉnh</sub>
 </p>
 
 <br/>

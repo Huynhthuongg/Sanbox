@@ -1,0 +1,97 @@
+uploads = []
+
+[[generated]]
+id = "owzmIw711zcmCU6okhqof"
+uri = "file://attached_assets/synthwave_ui_style_guide.png"
+type = "image"
+title = "synthwave OS UI style guide"
+
+[[generated]]
+id = "fMxbw7wW0pQH4YTC9tQuz"
+uri = "file://attached_assets/brand/sandbox_logo_hexagon_3d.png"
+type = "image"
+title = "sandbox ai hexagon 3d logo"
+
+[[generated]]
+id = "hLl3HfZissGVF2fdge7x8"
+uri = "file://attached_assets/brand/sandbox_logo_infinity.png"
+type = "image"
+title = "sandbox ai infinity neural logo"
+
+[[generated]]
+id = "LbA5walsNisxuSiJCV5xL"
+uri = "file://attached_assets/brand/sandbox_logo_S_monogram.png"
+type = "image"
+title = "sandbox ai S monogram logo"
+
+[[generated]]
+id = "uBBjBTNpzRqoXNujKax6Y"
+uri = "file://attached_assets/brand/sandbox_wordmark.png"
+type = "image"
+title = "sandbox ai wordmark typography"
+
+[[generated]]
+id = "CKOr29p1PByyhTQq9ACrQ"
+uri = "file://artifacts/sandbox-ai/public/icons/icon-512.png"
+type = "image"
+title = "sandbox ai app icon 512"
+
+[[generated]]
+id = "BczCRk-6PJbj8HfCRinrg"
+uri = "file://artifacts/sandbox-ai/public/splash/splash-portrait.png"
+type = "image"
+title = "sandbox ai splash portrait"
+
+[[generated]]
+id = "HeR9-l02ljP7K1zy2bICK"
+uri = "file://artifacts/sandbox-ai/public/splash/splash-landscape.png"
+type = "image"
+title = "sandbox ai splash landscape"
+
+[[outputs]]
+id = "nbPdeUUMsM6cYpr49dHzt"
+uri = "file://attached_assets/synthwave_ui_style_guide.png"
+type = "image"
+title = "Synthwave OS — UI Style Guide Sheet"
+
+[[outputs]]
+id = "zqtPbB49RjXqCilNBSJeV"
+uri = "file://attached_assets/brand/sandbox_logo_hexagon_3d.png"
+type = "image"
+title = "Biểu tượng 1 — Hexagon 3D (Logo chính)"
+
+[[outputs]]
+id = "SstVjvSC8y72QzD_mQgGH"
+uri = "file://attached_assets/brand/sandbox_logo_infinity.png"
+type = "image"
+title = "Biểu tượng 2 — Neural Infinity (Ký hiệu vô cực)"
+
+[[outputs]]
+id = "7kwl3wdcFDJy_mE6BE5ho"
+uri = "file://attached_assets/brand/sandbox_logo_S_monogram.png"
+type = "image"
+title = "Biểu tượng 3 — Monogram S (App Icon)"
+
+[[outputs]]
+id = "Ga0EmVmpBiatt31Qu2ZAI"
+uri = "file://attached_assets/brand/sandbox_wordmark.png"
+type = "image"
+title = "Biểu tượng 4 — Wordmark SANDBOX.AI"
+
+[[outputs]]
+id = "Sum7jzDOddbLaFdHOpFr1"
+uri = "file://artifacts/sandbox-ai/public/icons/icon-512.png"
+type = "image"
+title = "App Icon — iOS & Android (512×512)"
+
+[[outputs]]
+id = "7we5wJBNCqux7rjChBUqD"
+uri = "file://artifacts/sandbox-ai/public/splash/splash-portrait.png"
+type = "image"
+title = "Splash Screen — Portrait (iPhone)"
+
+[[outputs]]
+id = "28RdwYvxfT9Dej4Jdlz8K"
+uri = "file://artifacts/sandbox-ai/public/splash/splash-landscape.png"
+type = "image"
+title = "Splash Screen — Landscape (iPad / Tablet)"

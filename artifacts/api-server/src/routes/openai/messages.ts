@@ -108,7 +108,9 @@ router.post("/", async (req: Request<ConvParams>, res: Response) => {
       .where(eq(messages.conversationId, id))
       .orderBy(asc(messages.createdAt));
 
-    const model = body.model ?? conv.model ?? "gpt-5.2";
+    const VALID_CHAT_MODELS = new Set(["gpt-5.2", "gpt-5.1", "gpt-4o", "gpt-4", "gpt-3.5-turbo", "o1", "o3", "o4-mini"]);
+    const rawModel = body.model ?? conv.model ?? "gpt-5.2";
+    const model = VALID_CHAT_MODELS.has(rawModel) ? rawModel : "gpt-5.2";
 
     const systemPrompt =
       conv.mode === "code"

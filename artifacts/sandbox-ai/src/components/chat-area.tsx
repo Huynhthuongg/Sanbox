@@ -12,7 +12,7 @@ import {
   Menu, Code2, ImageIcon, MessageSquare, Smartphone,
   Zap, History, Globe, Brain, Layers, ArrowRight,
   Copy, Check, ChevronDown, Bot, BarChart2,
-  GitBranch, Shield, Cpu, TrendingUp, Search, ChevronUp,
+  GitBranch, Shield, Cpu, TrendingUp, Search, ChevronUp, Terminal,
 } from "lucide-react";
 import { LockedModeButton, PaywallModal } from "./feature-gate";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,6 +22,7 @@ import { ThinkingAnimation, DeepThinkBadge } from "./thinking-animation";
 import { MessageList } from "./message-list";
 import { CodePreviewPanel, extractCodeBlocks, hasRenderableCode } from "./code-preview-panel";
 import type { CodeBlock } from "./code-preview-panel";
+import { TerminalDrawer } from "./terminal-drawer";
 import { useLocation } from "wouter";
 
 interface ChatAreaProps {
@@ -35,14 +36,14 @@ type ConvMode = "agent" | "chat" | "code" | "sas" | "image" | "flutter";
 const MODES: { id: ConvMode; label: string; icon: typeof MessageSquare; description: string; color: string }[] = [
   { id: "agent", label: "Agent",  icon: Bot,         description: "GPT-5.2 Auto · autonomous agent",  color: "#a855f7" },
   { id: "chat",  label: "Chat",   icon: MessageSquare, description: "GPT-5.2 · deep reasoning",       color: "#00d0ff" },
-  { id: "code",  label: "Vscode", icon: Code2,         description: "GPT-5.3 Codex · code specialist", color: "#34d399" },
+  { id: "code",  label: "Vscode", icon: Code2,         description: "GPT-5.2 · code specialist",       color: "#34d399" },
   { id: "sas",   label: "Sas",    icon: BarChart2,     description: "Analytics AI · data & SaaS",      color: "#f59e0b" },
 ];
 
 const MODE_MODELS: Record<ConvMode, string> = {
   agent:   "gpt-5.2",
   chat:    "gpt-5.2",
-  code:    "gpt-5.3-codex",
+  code:    "gpt-5.2",
   sas:     "gpt-5.2",
   image:   "gpt-image-1",
   flutter: "gpt-5.2",
@@ -77,7 +78,7 @@ const EMPTY_STATE_FEATURES: Record<ConvMode, { icon: typeof Zap; title: string; 
     { icon: Zap,     title: "Real-time Stream",  desc: "Answers appear word by word instantly" },
   ],
   code: [
-    { icon: Code2,     title: "GPT-5.3 Codex",   desc: "Most capable coding model available" },
+    { icon: Code2,     title: "GPT-5.2 Code",    desc: "Expert coding model, write any language" },
     { icon: Zap,       title: "Live Sandbox",     desc: "Run code directly in the browser" },
     { icon: Shield,    title: "Security Review",  desc: "Phát hiện SQL Injection, Memory Leak tự động" },
     { icon: GitBranch, title: "One-Click Deploy", desc: "Push GitHub và deploy Vercel trong một bước" },
@@ -197,6 +198,8 @@ export function ChatArea({ conversationId, onToggleSidebar, isSidebarOpen }: Cha
   const [newMsgCount, setNewMsgCount] = useState(0);
   const [selectedModel, setSelectedModel] = useState(MULTI_MODELS[0]);
   const [modelDropOpen, setModelDropOpen] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [terminalCode, setTerminalCode] = useState<string | undefined>(undefined);
   const isAtBottomRef = useRef(true);
   const pendingRef = useRef<PendingEntry | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -438,6 +441,29 @@ export function ChatArea({ conversationId, onToggleSidebar, isSidebarOpen }: Cha
             {isDeepThink && <DeepThinkBadge />}
           </AnimatePresence>
 
+          {/* Terminal toggle — only visible in code mode */}
+          {selectedMode === "code" && (
+            <button
+              onClick={() => setTerminalOpen((v) => !v)}
+              title={terminalOpen ? "Close terminal" : "Open sandbox terminal"}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
+              style={terminalOpen ? {
+                background: "rgba(52,211,153,0.15)",
+                color: "#34d399",
+                border: "1px solid rgba(52,211,153,0.3)",
+              } : {
+                background: "rgba(255,255,255,0.05)",
+                color: "rgba(255,255,255,0.4)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+              onMouseEnter={e => { if (!terminalOpen) { e.currentTarget.style.color = "#34d399"; e.currentTarget.style.background = "rgba(52,211,153,0.08)"; } }}
+              onMouseLeave={e => { if (!terminalOpen) { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; e.currentTarget.style.background = "rgba(255,255,255,0.05)"; } }}
+            >
+              <Terminal size={12} />
+              <span className="hidden sm:inline">Terminal</span>
+            </button>
+          )}
+
           {/* Copy conversation */}
           {conversationId && messages && messages.length > 0 && (
             <CopyConversationButton messages={messages as any} />
@@ -577,7 +603,7 @@ export function ChatArea({ conversationId, onToggleSidebar, isSidebarOpen }: Cha
                 </h2>
                 <p className="text-xs max-w-xs mb-5" style={{ color: "rgba(255,255,255,0.35)" }}>
                   {selectedMode === "agent"   ? "Tự lên kế hoạch, thực thi, research và deploy — không cần can thiệp thủ công."
-                    : selectedMode === "code"  ? "GPT-5.3 Codex — the most capable coding model. Ask anything."
+                    : selectedMode === "code"  ? "GPT-5.2 — expert coding model. Write any language, run in browser."
                     : selectedMode === "sas"   ? "Analytics AI phân tích dữ liệu, tạo dashboard và dự báo tăng trưởng SaaS."
                     : selectedMode === "image" ? "Powered by gpt-image-1. Describe your vision and watch it come to life."
                     :                           "Powered by GPT-5.2 · Vector Memory · Real-time streaming."}
@@ -692,6 +718,13 @@ export function ChatArea({ conversationId, onToggleSidebar, isSidebarOpen }: Cha
         isOpen={previewOpen}
         onClose={() => setPreviewOpen(false)}
         autoOpened={previewAutoOpened}
+      />
+
+      {/* ── Standalone Terminal Drawer (code mode) ── */}
+      <TerminalDrawer
+        isOpen={terminalOpen}
+        onClose={() => setTerminalOpen(false)}
+        initialCode={terminalCode}
       />
 
       {/* ── Paywall Modal (suggest-mode bypass guard) ── */}

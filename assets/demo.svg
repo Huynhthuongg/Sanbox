@@ -1,0 +1,10 @@
+<!-- dán nội dung demo.svg (mình đã cung cấp trước) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="300" viewBox="0 0 820 300">
+  <!-- simplified demo svg -->
+  <rect width="100%" height="100%" fill="#f8fafc" rx="12"/>
+  <g transform="translate(120,150)">
+    <circle r="48" fill="url(#g)"/>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
+  </g>
+  <text x="240" y="135" font-size="28" fill="#0f172a">Sanbox — AI Agent Sandbox</text>
+</svg>

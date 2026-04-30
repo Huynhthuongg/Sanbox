@@ -76,7 +76,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
-    "@clerk/react": "^6.2.0",
+    "@clerk/react": "^6.4.6",
     "@stripe/stripe-js": "^9.1.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "react-markdown": "^10.1.0",

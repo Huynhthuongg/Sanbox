@@ -14,10 +14,20 @@ const router = Router({ mergeParams: true });
 
 router.use(requireAuth);
 
+function parseConversationId(rawId: string): number | null {
+  const id = Number.parseInt(rawId, 10);
+  if (!Number.isInteger(id) || id <= 0) return null;
+  return id;
+}
+
 router.get("/", async (req: Request<ConvParams>, res: Response) => {
   const { userId } = getServerAuth(req);
   try {
-    const id = parseInt(req.params.id);
+    const id = parseConversationId(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "Invalid conversation id" });
+      return;
+    }
     const [conv] = await db
       .select()
       .from(conversations)
@@ -48,7 +58,11 @@ router.get("/", async (req: Request<ConvParams>, res: Response) => {
 
 router.post("/", async (req: Request<ConvParams>, res: Response) => {
   const { userId } = getServerAuth(req);
-  const id = parseInt(req.params.id);
+  const id = parseConversationId(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "Invalid conversation id" });
+      return;
+    }
 
   try {
     const body = SendOpenaiMessageBody.parse(req.body);

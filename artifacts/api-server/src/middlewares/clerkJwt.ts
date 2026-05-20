@@ -1,7 +1,10 @@
 import { createRemoteJWKSet, jwtVerify, JWTPayload } from "jose";
 import { Request, Response, NextFunction } from "express";
 
-const CLERK_FRONTEND_API = "https://loving-colt-32.clerk.accounts.dev";
+const CLERK_FRONTEND_API = process.env.CLERK_FRONTEND_API;
+if (!CLERK_FRONTEND_API) {
+  throw new Error("Missing CLERK_FRONTEND_API env var");
+}
 const JWKS_URL = `${CLERK_FRONTEND_API}/.well-known/jwks.json`;
 const JWKS = createRemoteJWKSet(new URL(JWKS_URL));
 

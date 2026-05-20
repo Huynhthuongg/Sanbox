@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { db } from "@workspace/db";
-import { conversations, messages } from "@workspace/db";
+import { conversations, messages, type Conversation, type Message } from "@workspace/db";
 import { CreateOpenaiConversationBody, UpdateOpenaiConversationBody } from "@workspace/api-zod";
 import { eq, desc, asc, and } from "drizzle-orm";
 import { ZodError } from "zod";
@@ -28,7 +28,7 @@ router.get("/", async (req, res: Response) => {
       .where(eq(conversations.userId, userId!))
       .orderBy(desc(conversations.updatedAt));
     res.json(
-      all.map((c) => ({
+      all.map((c: Conversation) => ({
         id: c.id,
         title: c.title,
         mode: c.mode,
@@ -100,7 +100,7 @@ router.get("/:id", async (req: Request<IdParams>, res: Response) => {
       model: conv.model,
       createdAt: conv.createdAt,
       updatedAt: conv.updatedAt,
-      messages: msgs.map((m) => ({
+      messages: msgs.map((m: Message) => ({
         id: m.id,
         conversationId: m.conversationId,
         role: m.role,

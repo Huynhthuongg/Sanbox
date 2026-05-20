@@ -59,10 +59,10 @@ router.get("/", async (req: Request<ConvParams>, res: Response) => {
 router.post("/", async (req: Request<ConvParams>, res: Response) => {
   const { userId } = getServerAuth(req);
   const id = parseConversationId(req.params.id);
-    if (!id) {
-      res.status(400).json({ error: "Invalid conversation id" });
-      return;
-    }
+  if (!id) {
+    res.status(400).json({ error: "Invalid conversation id" });
+    return;
+  }
 
   try {
     const body = SendOpenaiMessageBody.parse(req.body);

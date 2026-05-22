@@ -22,6 +22,8 @@ import AuthCheck from "@/pages/auth-check";
 import Templates from "@/pages/templates";
 import ImportGitHub from "@/pages/import-github";
 import { usePermissions } from "@/hooks/use-permissions";
+import HealthConfigPage from "@/pages/health-config";
+import { clerkConfig, isAuthEnabled } from "@/config/auth-mode";
 import AuthPortal from "@/pages/auth-portal";
 import MobileDashboard from "@/pages/mobile-dashboard";
 import ChatStaticPage from "@/pages/chat-static";
@@ -30,37 +32,8 @@ import ToolsHub from "@/pages/tools-hub";
 
 const queryClient = new QueryClient();
 
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
+const { clerkPubKey, clerkProxyUrl } = clerkConfig;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
-const requestedAuthMode = (import.meta.env.VITE_AUTH_MODE ?? "clerk").toLowerCase();
-const authMode = requestedAuthMode === "public" ? "public" : "clerk";
-const isClerkConfigured = Boolean(clerkPubKey);
-const isAuthEnabled = authMode === "clerk" && isClerkConfigured;
-
-const envChecklist = [
-  {
-    key: "VITE_AUTH_MODE",
-    value: import.meta.env.VITE_AUTH_MODE,
-    required: false,
-    status: "info" as const,
-    hint: "Optional. Use 'clerk' (default) or 'public'.",
-  },
-  {
-    key: "VITE_CLERK_PUBLISHABLE_KEY",
-    value: clerkPubKey,
-    required: authMode === "clerk",
-    status: isClerkConfigured ? ("ok" as const) : ("missing" as const),
-    hint: "Required when VITE_AUTH_MODE=clerk.",
-  },
-  {
-    key: "VITE_CLERK_PROXY_URL",
-    value: clerkProxyUrl,
-    required: false,
-    status: "info" as const,
-    hint: "Optional proxy URL for Clerk.",
-  },
-];
 
 function stripBase(path: string): string {
   return basePath && path.startsWith(basePath)
@@ -231,32 +204,6 @@ function ClerkAuthTokenSetter() {
   return null;
 }
 
-
-function HealthConfigPage() {
-  return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--sb-bg)", color: "#fff", padding: 24 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>Health Config</h1>
-      <p style={{ opacity: 0.8, marginBottom: 20 }}>
-        Runtime auth mode: <strong>{authMode}</strong>. Auth enabled: <strong>{String(isAuthEnabled)}</strong>.
-      </p>
-      <div style={{ display: "grid", gap: 10 }}>
-        {envChecklist.map((item) => (
-          <div key={item.key} style={{ border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10, padding: 12 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-              <code>{item.key}</code>
-              <strong>
-                {item.status === "ok" ? "✅ configured" : item.status === "missing" ? "❌ missing" : "ℹ️ optional"}
-              </strong>
-            </div>
-            <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>required: {String(item.required)}</div>
-            <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>value: {item.value ? "set" : "empty"}</div>
-            <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>{item.hint}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function Router() {
   return (

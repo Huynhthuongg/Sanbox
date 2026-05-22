@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { db } from "@workspace/db";
-import { conversations, messages } from "@workspace/db";
+import { conversations, messages, type Message } from "@workspace/db";
 import { SendOpenaiMessageBody } from "@workspace/api-zod";
 import { eq, asc, and } from "drizzle-orm";
 import { openai } from "@workspace/integrations-openai-ai-server";
@@ -14,10 +14,20 @@ const router = Router({ mergeParams: true });
 
 router.use(requireAuth);
 
+function parseConversationId(rawId: string): number | null {
+  const id = Number.parseInt(rawId, 10);
+  if (!Number.isInteger(id) || id <= 0) return null;
+  return id;
+}
+
 router.get("/", async (req: Request<ConvParams>, res: Response) => {
   const { userId } = getServerAuth(req);
   try {
-    const id = parseInt(req.params.id);
+    const id = parseConversationId(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "Invalid conversation id" });
+      return;
+    }
     const [conv] = await db
       .select()
       .from(conversations)
@@ -32,7 +42,7 @@ router.get("/", async (req: Request<ConvParams>, res: Response) => {
       .where(eq(messages.conversationId, id))
       .orderBy(asc(messages.createdAt));
     res.json(
-      all.map((m) => ({
+      all.map((m: Message) => ({
         id: m.id,
         conversationId: m.conversationId,
         role: m.role,
@@ -48,7 +58,11 @@ router.get("/", async (req: Request<ConvParams>, res: Response) => {
 
 router.post("/", async (req: Request<ConvParams>, res: Response) => {
   const { userId } = getServerAuth(req);
-  const id = parseInt(req.params.id);
+  const id = parseConversationId(req.params.id);
+  if (!id) {
+    res.status(400).json({ error: "Invalid conversation id" });
+    return;
+  }
 
   try {
     const body = SendOpenaiMessageBody.parse(req.body);
@@ -140,8 +154,8 @@ Always provide complete, production-ready code. Use markdown code blocks with th
     const chatMessages = [
       { role: "system" as const, content: systemPrompt },
       ...existingMessages
-        .filter((m) => m.role === "user" || m.role === "assistant")
-        .map((m) => ({
+        .filter((m: Message) => m.role === "user" || m.role === "assistant")
+        .map((m: Message) => ({
           role: m.role as "user" | "assistant",
           content: m.content,
         })),

@@ -22,11 +22,17 @@ import AuthCheck from "@/pages/auth-check";
 import Templates from "@/pages/templates";
 import ImportGitHub from "@/pages/import-github";
 import { usePermissions } from "@/hooks/use-permissions";
+import HealthConfigPage from "@/pages/health-config";
+import { clerkConfig, isAuthEnabled } from "@/config/auth-mode";
+import AuthPortal from "@/pages/auth-portal";
+import MobileDashboard from "@/pages/mobile-dashboard";
+import ChatStaticPage from "@/pages/chat-static";
+import TermuxLab from "@/pages/termux-lab";
+import ToolsHub from "@/pages/tools-hub";
 
 const queryClient = new QueryClient();
 
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
+const { clerkPubKey, clerkProxyUrl } = clerkConfig;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 function stripBase(path: string): string {
@@ -198,15 +204,22 @@ function ClerkAuthTokenSetter() {
   return null;
 }
 
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/about" component={About} />
       <Route path="/get-app" component={GetApp} />
+      <Route path="/auth" component={AuthPortal} />
+      <Route path="/mobile-dashboard" component={MobileDashboard} />
+      <Route path="/chat-static" component={ChatStaticPage} />
+      <Route path="/termux-lab" component={TermuxLab} />
+      <Route path="/tools" component={ToolsHub} />
       <Route path="/sign-in/*?" component={SignInPage} />
       <Route path="/sign-up/*?" component={SignUpPage} />
       <Route path="/auth-check" component={AuthCheck} />
+      <Route path="/health-config" component={HealthConfigPage} />
       <Route path="/prompts">
         <ProtectedRoute><Prompts /></ProtectedRoute>
       </Route>
@@ -258,14 +271,57 @@ function ClerkProviderWithRoutes() {
   );
 }
 
+
+function PublicOnlyRouter() {
+  return (
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/pricing">
+        <Redirect to="/" />
+      </Route>
+      <Route path="/get-app" component={GetApp} />
+      <Route path="/auth" component={AuthPortal} />
+      <Route path="/mobile-dashboard" component={MobileDashboard} />
+      <Route path="/chat-static" component={ChatStaticPage} />
+      <Route path="/termux-lab" component={TermuxLab} />
+      <Route path="/tools" component={ToolsHub} />
+      <Route path="/download" component={Download} />
+      <Route path="/health-config" component={HealthConfigPage} />
+      <Route path="/sign-in/*?" component={AuthPortal} />
+      <Route path="/sign-up/*?" component={AuthPortal} />
+      <Route path="/chat">
+        <Redirect to="/" />
+      </Route>
+      <Route path="/chat/:id">
+        <Redirect to="/" />
+      </Route>
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function PublicAppWithoutAuth() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <div style={{ color: "#fff", padding: 16, fontSize: 14, opacity: 0.85 }}>
+          Auth is running in public mode. Open <code>/health-config</code> to inspect environment readiness.
+        </div>
+        <PublicOnlyRouter />
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
-  if (!clerkPubKey) {
+  if (!isAuthEnabled) {
     return (
-      <div style={{ color: "#fff", padding: 24 }}>
-        Missing VITE_CLERK_PUBLISHABLE_KEY — please check environment variables.
-      </div>
+      <WouterRouter base={basePath}>
+        <PublicAppWithoutAuth />
+      </WouterRouter>
     );
   }
 

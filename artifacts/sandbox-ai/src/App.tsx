@@ -277,7 +277,9 @@ function PublicOnlyRouter() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/about" component={About} />
-      <Route path="/pricing" component={Pricing} />
+      <Route path="/pricing">
+        <Redirect to="/" />
+      </Route>
       <Route path="/get-app" component={GetApp} />
       <Route path="/auth" component={AuthPortal} />
       <Route path="/mobile-dashboard" component={MobileDashboard} />

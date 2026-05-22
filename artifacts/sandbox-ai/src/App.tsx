@@ -258,14 +258,54 @@ function ClerkProviderWithRoutes() {
   );
 }
 
+
+function PublicOnlyRouter() {
+  return (
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/pricing" component={Pricing} />
+      <Route path="/get-app" component={GetApp} />
+      <Route path="/download" component={Download} />
+      <Route path="/sign-in/*?">
+        <Redirect to="/" />
+      </Route>
+      <Route path="/sign-up/*?">
+        <Redirect to="/" />
+      </Route>
+      <Route path="/chat">
+        <Redirect to="/" />
+      </Route>
+      <Route path="/chat/:id">
+        <Redirect to="/" />
+      </Route>
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function PublicAppWithoutAuth() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <div style={{ color: "#fff", padding: 16, fontSize: 14, opacity: 0.85 }}>
+          Auth is temporarily unavailable because <code>VITE_CLERK_PUBLISHABLE_KEY</code> is not configured.
+          Public pages are still available.
+        </div>
+        <PublicOnlyRouter />
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
   if (!clerkPubKey) {
     return (
-      <div style={{ color: "#fff", padding: 24 }}>
-        Missing VITE_CLERK_PUBLISHABLE_KEY — please check environment variables.
-      </div>
+      <WouterRouter base={basePath}>
+        <PublicAppWithoutAuth />
+      </WouterRouter>
     );
   }
 

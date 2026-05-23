@@ -10,7 +10,7 @@ export default function TermuxLab() {
         {logs.map((l, i) => <div key={i}>{l}</div>)}
       </div>
       <div className="flex gap-2">
-        <input value={cmd} onChange={(e) => setCmd(e.target.value)} className="flex-1 bg-white/10 text-white px-3 py-2 rounded" />
+        <input value={cmd} onChange={(e) => setCmd(e.target.value)} className="flex-1 bg-white/10 text-white px-3 py-2 rounded" aria-label="Command" />
         <button onClick={() => setLogs((v) => [...v, `$ ${cmd}`, "[ai] suggestion: add --verbose if fail"])} className="px-3 py-2 rounded bg-cyan-500 text-black font-bold">Run</button>
       </div>
     </div>

@@ -29,5 +29,13 @@
         "./src/*"
       ]
     }
-  }
+  },
+  "references": [
+    {
+      "path": "../../lib/api-client-react"
+    },
+    {
+      "path": "../../lib/integrations-openai-ai-react"
+    }
+  ]
 }

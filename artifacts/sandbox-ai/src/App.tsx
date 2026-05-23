@@ -306,7 +306,7 @@ function PublicAppWithoutAuth() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div style={{ color: "#fff", padding: 16, fontSize: 14, opacity: 0.85 }}>
-          Auth is running in public mode. Open <code>/health-config</code> to inspect environment readiness.
+          Auth is unavailable in this environment. Open <code>/health-config</code> to inspect environment readiness.
         </div>
         <PublicOnlyRouter />
         <Toaster />

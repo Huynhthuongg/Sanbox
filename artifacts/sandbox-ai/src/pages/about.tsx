@@ -919,7 +919,7 @@ export default function About() {
           </div>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com/Huynhthuongg/Sanbox/tree/main?tab=readme-ov-file"
+              href="https://github.com/Huynhthuongg/Rkix-v1"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 transition-colors hover:text-white"

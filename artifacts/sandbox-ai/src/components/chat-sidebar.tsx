@@ -103,7 +103,7 @@ export function ChatSidebar({ isOpen, onToggle, activeId, isMobile = false, onCl
     createConversation.mutate(
       { data: { title: "New Conversation", mode: "chat", model: "gpt-5.2" } },
       {
-        onSuccess: (conv) => {
+        onSuccess: (conv: any) => {
           queryClient.invalidateQueries({ queryKey: getListOpenaiConversationsQueryKey() });
           setLocation(`/chat/${conv.id}`);
           onClose?.();
@@ -130,7 +130,7 @@ export function ChatSidebar({ isOpen, onToggle, activeId, isMobile = false, onCl
     if (!conversations) return [];
     if (!search.trim()) return conversations;
     const q = search.toLowerCase();
-    return conversations.filter((c) => c.title?.toLowerCase().includes(q) || c.mode?.toLowerCase().includes(q));
+    return conversations.filter((c: any) => c.title?.toLowerCase().includes(q) || c.mode?.toLowerCase().includes(q));
   }, [conversations, search]);
 
   const grouped = useMemo(() => groupConversations(filtered as any), [filtered]);

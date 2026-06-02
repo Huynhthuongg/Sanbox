@@ -282,7 +282,7 @@ export function ChatArea({ conversationId, onToggleSidebar, isSidebarOpen }: Cha
     createConversation.mutate(
       { data: { title: content.slice(0, 60), mode: mode as any, model } },
       {
-        onSuccess: (conv) => {
+        onSuccess: (conv: any) => {
           queryClient.invalidateQueries({ queryKey: getListOpenaiConversationsQueryKey() });
           pendingRef.current = { message: content, forConvId: conv.id };
           navigate(`/chat/${conv.id}`);

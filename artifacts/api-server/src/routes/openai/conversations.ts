@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { db } from "@workspace/db";
-import { conversations, messages } from "@workspace/db";
+import { conversations, messages, type Conversation, type Message } from "@workspace/db";
 import { CreateOpenaiConversationBody, UpdateOpenaiConversationBody } from "@workspace/api-zod";
 import { eq, desc, asc, and } from "drizzle-orm";
 import { ZodError } from "zod";
@@ -13,6 +13,12 @@ const router = Router();
 
 router.use(requireAuth);
 
+function parseConversationId(rawId: string): number | null {
+  const id = Number.parseInt(rawId, 10);
+  if (!Number.isInteger(id) || id <= 0) return null;
+  return id;
+}
+
 router.get("/", async (req, res: Response) => {
   const { userId } = getServerAuth(req);
   try {
@@ -22,7 +28,7 @@ router.get("/", async (req, res: Response) => {
       .where(eq(conversations.userId, userId!))
       .orderBy(desc(conversations.updatedAt));
     res.json(
-      all.map((c) => ({
+      all.map((c: Conversation) => ({
         id: c.id,
         title: c.title,
         mode: c.mode,
@@ -69,7 +75,11 @@ router.post("/", async (req, res: Response) => {
 router.get("/:id", async (req: Request<IdParams>, res: Response) => {
   const { userId } = getServerAuth(req);
   try {
-    const id = parseInt(req.params.id);
+    const id = parseConversationId(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "Invalid conversation id" });
+      return;
+    }
     const [conv] = await db
       .select()
       .from(conversations)
@@ -90,7 +100,7 @@ router.get("/:id", async (req: Request<IdParams>, res: Response) => {
       model: conv.model,
       createdAt: conv.createdAt,
       updatedAt: conv.updatedAt,
-      messages: msgs.map((m) => ({
+      messages: msgs.map((m: Message) => ({
         id: m.id,
         conversationId: m.conversationId,
         role: m.role,
@@ -106,7 +116,11 @@ router.get("/:id", async (req: Request<IdParams>, res: Response) => {
 router.patch("/:id", async (req: Request<IdParams>, res: Response) => {
   const { userId } = getServerAuth(req);
   try {
-    const id = parseInt(req.params.id);
+    const id = parseConversationId(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "Invalid conversation id" });
+      return;
+    }
     const body = UpdateOpenaiConversationBody.parse(req.body);
 
     const updates: Partial<{ title: string; model: string; updatedAt: Date }> = {
@@ -146,7 +160,11 @@ router.patch("/:id", async (req: Request<IdParams>, res: Response) => {
 router.delete("/:id", async (req: Request<IdParams>, res: Response) => {
   const { userId } = getServerAuth(req);
   try {
-    const id = parseInt(req.params.id);
+    const id = parseConversationId(req.params.id);
+    if (!id) {
+      res.status(400).json({ error: "Invalid conversation id" });
+      return;
+    }
     const deleted = await db
       .delete(conversations)
       .where(and(eq(conversations.id, id), eq(conversations.userId, userId!)))

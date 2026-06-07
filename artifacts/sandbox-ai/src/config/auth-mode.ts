@@ -25,7 +25,7 @@ export const envChecklist = [
     key: "VITE_CLERK_PUBLISHABLE_KEY",
     value: clerkPubKey,
     required: authMode === "clerk",
-    status: isClerkConfigured ? ("ok" as const) : ("missing" as const),
+    status: isClerkConfigured ? ("ok" as const) : authMode === "clerk" ? ("missing" as const) : ("info" as const),
     hint: "Required when VITE_AUTH_MODE=clerk.",
   },
   {

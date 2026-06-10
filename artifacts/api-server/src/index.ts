@@ -1,3 +1,6 @@
+// Initialize OpenTelemetry instrumentation first
+import './instrumentation';
+
 import app from "./app";
 import { logger } from "./lib/logger";
 

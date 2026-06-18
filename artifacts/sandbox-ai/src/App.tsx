@@ -289,10 +289,10 @@ function PublicOnlyRouter() {
       <Route path="/download" component={Download} />
       <Route path="/health-config" component={HealthConfigPage} />
       <Route path="/sign-in/*?">
-        <Redirect to="/" />
+        <Redirect to="/auth" />
       </Route>
       <Route path="/sign-up/*?">
-        <Redirect to="/" />
+        <Redirect to="/auth" />
       </Route>
       <Route path="/chat">
         <Redirect to="/" />
